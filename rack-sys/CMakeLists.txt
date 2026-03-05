@@ -144,6 +144,19 @@ if(UNIX AND NOT APPLE)
     target_link_libraries(rack_sys PUBLIC ${CMAKE_DL_LIBS})
 endif()
 
+# MSVC-specific settings
+if(MSVC)
+    target_compile_options(rack_sys PRIVATE
+        # Make __cplusplus report the correct value (MSVC defaults to 199711L).
+        # Without this, the VST3 SDK's SMTG_CPP20 macro evaluates to false even
+        # in C++20 mode, causing char8_t/u8string compilation errors.
+        /Zc:__cplusplus
+        # Prevent windows.h from defining min/max macros that conflict with
+        # std::min/std::max used in vst3_scanner.cpp and other sources.
+        /DNOMINMAX
+    )
+endif()
+
 # Compiler warnings
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(rack_sys PRIVATE
