@@ -561,6 +561,14 @@ impl PluginInstance for AudioUnitPlugin {
         }
     }
 
+    fn input_channels(&self) -> usize {
+        self.input_channels
+    }
+
+    fn output_channels(&self) -> usize {
+        self.output_channels
+    }
+
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }

@@ -238,6 +238,18 @@ pub trait PluginInstance: Send + 'static {
     /// Check if the plugin is initialized
     fn is_initialized(&self) -> bool;
 
+    /// Number of audio input channels the plugin expects (e.g., 1 = mono, 2 = stereo).
+    /// Hosts should adapt their channel layout to match.
+    fn input_channels(&self) -> usize {
+        1
+    }
+
+    /// Number of audio output channels the plugin produces (e.g., 1 = mono, 2 = stereo).
+    /// Hosts should adapt their channel layout to match.
+    fn output_channels(&self) -> usize {
+        1
+    }
+
     /// Downcast to concrete type (e.g., to access platform-specific GUI APIs)
     fn as_any(&self) -> &dyn Any;
 
