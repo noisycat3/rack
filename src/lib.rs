@@ -93,7 +93,7 @@ pub use au::{AudioUnitGui, AudioUnitPlugin as Plugin, AudioUnitScanner as Scanne
     not(target_os = "watchos"),
     not(target_os = "visionos")
 ))]
-pub use vst3::{Vst3Plugin as Plugin, Vst3Scanner as Scanner};
+pub use vst3::{Vst3Gui, Vst3Plugin as Plugin, Vst3Scanner as Scanner};
 
 /// Prelude module for convenient imports
 pub mod prelude {

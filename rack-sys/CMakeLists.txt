@@ -50,6 +50,10 @@ if(HAVE_VST3_SDK)
         src/vst3_instance.cpp
     )
 
+    if(WIN32)
+        list(APPEND RACK_VST3_SOURCES src/vst3_gui_win32.cpp)
+    endif()
+
     # VST3 SDK base sources (required for FUID, FUnknown, etc.)
     set(VST3_SDK_SOURCES
         # Base library - provides FUID, FUnknown, interface IIDs

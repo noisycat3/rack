@@ -1,6 +1,4 @@
-use crate::{
-    Error, MidiEvent, MidiEventKind, ParameterInfo, PluginInfo, PluginInstance, PresetInfo, Result,
-};
+use crate::{Error, MidiEvent, MidiEventKind, ParameterInfo, PluginInfo, PluginInstance, PresetInfo, Result};
 use smallvec::SmallVec;
 use std::ffi::CString;
 use std::marker::PhantomData;
@@ -532,6 +530,37 @@ impl PluginInstance for Vst3Plugin {
         unsafe {
             let result = ffi::rack_vst3_plugin_is_initialized(self.inner.as_ptr());
             result > 0
+        }
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+        self
+    }
+}
+
+// ── GUI support ──────────────────────────────────────────────────────────────
+
+impl Vst3Plugin {
+    /// Check if this plugin has a GUI editor
+    pub fn has_editor(&self) -> bool {
+        unsafe { ffi::rack_vst3_gui_has_editor(self.inner.as_ptr()) != 0 }
+    }
+
+    /// Create a GUI editor handle. Does NOT show a window yet — call
+    /// `Vst3Gui::show_window()` on the returned handle (from the main thread).
+    pub fn create_gui(&mut self) -> Result<super::gui::Vst3Gui> {
+        unsafe {
+            let ptr = ffi::rack_vst3_gui_create(self.inner.as_ptr());
+            if ptr.is_null() {
+                return Err(Error::Other(
+                    "Plugin does not support GUI editor".to_string(),
+                ));
+            }
+            Ok(super::gui::Vst3Gui::from_raw(ptr))
         }
     }
 }

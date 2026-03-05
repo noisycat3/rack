@@ -1,4 +1,5 @@
 use crate::{MidiEvent, ParameterInfo, PluginInfo, PresetInfo, Result};
+use std::any::Any;
 
 /// Trait for scanning and discovering audio plugins
 pub trait PluginScanner {
@@ -23,7 +24,7 @@ pub trait PluginScanner {
 /// - `initialize()` and `Drop` are **globally serialized** (mutex protected) for AudioUnit safety
 /// - Other methods (reset, parameters, etc.) are safe but should not be called from audio thread
 /// - Only `process()` is designed for realtime/audio thread usage
-pub trait PluginInstance: Send {
+pub trait PluginInstance: Send + 'static {
     /// Initialize the plugin with the given sample rate and maximum block size
     ///
     /// # Thread Safety
@@ -236,4 +237,10 @@ pub trait PluginInstance: Send {
 
     /// Check if the plugin is initialized
     fn is_initialized(&self) -> bool;
+
+    /// Downcast to concrete type (e.g., to access platform-specific GUI APIs)
+    fn as_any(&self) -> &dyn Any;
+
+    /// Downcast to concrete type (mutable)
+    fn as_any_mut(&mut self) -> &mut dyn Any;
 }

@@ -105,6 +105,8 @@ fn main() {
         "windows" => {
             // ole32 provides CoCreateGuid, required by VST3 SDK's FUID::generate()
             println!("cargo:rustc-link-lib=ole32");
+            // user32 provides CreateWindowEx, etc., required for VST3 GUI hosting
+            println!("cargo:rustc-link-lib=user32");
         }
         _ => {
             eprintln!("Warning: Unsupported target OS: {}", target_os);
